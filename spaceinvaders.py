@@ -77,6 +77,76 @@ pygame.init()
 screen_width = 700
 screen_height = 400
 screen = pygame.display.set_mode([screen_width, screen_height])
+
+pygame.display.set_caption("Instruction Screen")
+ 
+# Loop until the user clicks the close button.
+done = False
+ 
+# Used to manage how fast the screen updates
+clock = pygame.time.Clock()
+ 
+# Starting position of the rectangle
+rect_x = 50
+rect_y = 50
+ 
+# Speed and direction of rectangle
+rect_change_x = 5
+rect_change_y = 5
+ 
+# This is a font we use to draw text on the screen (size 36)
+font = pygame.font.Font(None, 36)
+ 
+display_instructions = True
+instruction_page = 1
+name = ""
+
+while not done and display_instructions:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        if event.type == pygame.KEYDOWN:
+            if event.unicode.isalpha():
+                name += event.unicode
+            elif event.key == pygame.K_BACKSPACE:
+                name = name[:-1]
+            elif event.key == pygame.K_RETURN:
+                instruction_page += 1  
+                if instruction_page == 2:
+                    display_instructions = False                
+ 
+    # Set the screen background
+    screen.fill(BLACK)
+ 
+    if instruction_page == 1:
+        # Draw instructions, page 1
+        # This could also load an image created in another program.
+        # That could be both easier and more flexible.
+ 
+        text = font.render("SPACE INVADERS", True, BURGUNDY)
+        screen.blit(text, [10, 10])
+        
+        text = font.render("Kill as many alien as you can in 10 seconds ", True, WHITE)
+        screen.blit(text, [10, 80])        
+       
+        text = font.render("Enter your name: ", True, WHITE)
+        screen.blit(text, [10, 40])    
+       
+        text = font.render(name, True, WHITE)
+        screen.blit(text, [220, 40])        
+ 
+        text = font.render("Hit enter to continue", True, WHITE)
+        screen.blit(text, [10, 110])
+    
+    
+ 
+    # Limit to 60 frames per second
+    clock.tick(60)
+ 
+    # Go ahead and update the screen with what we've drawn.
+    pygame.display.flip()
+   
+    score = 0
  
 # --- Sprite lists
  
@@ -120,7 +190,8 @@ score = 0
 player.rect.y = 370
 start_ticks=pygame.time.get_ticks() #starter tick
 
-file = open('highscores.txt', 'r')
+try:
+    file = open('highscores.txt', 'r')
 except:
     file = open('highscores.txt', 'w')
     file.write("Empty\n0\nEmpty\n0\nEmpty\n0\nEmpty\n0\nEmpty\n0")
@@ -167,7 +238,7 @@ while not done:
  
     # --- Game logic
     seconds=(pygame.time.get_ticks()-start_ticks)/1000 #calculate how many seconds
-    if seconds>15: # if more than 10 seconds close the game
+    if seconds>10: # if more than 10 seconds close the game
         done = True
           
        
@@ -197,7 +268,7 @@ while not done:
         if score > 50:
             done = True
             
-        if done = True:
+        if done == True:
                 for i in range(5):
                     if not score > int(highscore_list[i]):
                         continue
